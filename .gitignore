@@ -1,5 +1,5 @@
 *.s
 src/jit/.jit.c
-bin/bf-*
+bin/bfc
 __pycache__
 .vscode
