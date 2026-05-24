@@ -91,7 +91,7 @@ void bf_free(Lexer *lexer)
     da_free(lexer->tokens);
 }
 
-#define nanos_to_seconds_float(nanos) (float)(nanos) / (float)(1e+9)
+#define nanos_to_seconds_float(nanos) ((float)(nanos)) / (float)(1e+9)
 void bf_print_metrics(void)
 {
     printf("\n");
