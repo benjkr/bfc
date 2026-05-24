@@ -1,3 +1,4 @@
 *.s
 src/jit/.jit.c
 bin/bf-*
+__pycache__
