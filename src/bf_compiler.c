@@ -1,9 +1,8 @@
-#include "bf.c"
+#include "bf.h"
+#include "nob.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 #define TEMP_SRC_FILE "./.temp.c"
-#define TEMP_OUT_FILE "./.temp"
 #define BF_ARRAY_LEN "655360"
 #define BF_ARRAY "MEMORY"
 #define BF_INSTRUCTION_POINTER "ip"
@@ -39,7 +38,7 @@ const char *INSTRUCTION_TO_SRC[] = {
     [TYPE_LOOP_END] = BF_LOOP_END,
 };
 
-void bf_compile(Interpreter *interpreter)
+void bf_compile(Interpreter *interpreter, char *out_file)
 {
     compile_start_time = nanos_since_unspecified_epoch();
     String_Builder sb = {0};
@@ -69,55 +68,9 @@ void bf_compile(Interpreter *interpreter)
     nob_write_entire_file(TEMP_SRC_FILE, sb.items, sb.count);
 
     Cmd cmd = {0};
-    cmd_append(&cmd, "cc", "-Wall", "-o", TEMP_OUT_FILE, "-O3", TEMP_SRC_FILE);
+    cmd_append(&cmd, "cc", "-Wall", "-o", out_file, "-O3", TEMP_SRC_FILE);
     if (!nob_cmd_run(&cmd)) abort();
     nob_delete_file(TEMP_SRC_FILE);
 
     compile_stop_time = nanos_since_unspecified_epoch();
-}
-
-void usage(FILE *stream)
-{
-    fprintf(stream, "Usage: %s [OPTIONS] <BF-FILE>\n", flag_program_name());
-    fprintf(stream, "OPTIONS:\n");
-    flag_print_options(stream);
-}
-
-int main(int argc, char *argv[])
-{
-    program_start_time = nanos_since_unspecified_epoch();
-    bool *help = flag_bool("help", false, "Print this help to stdout and exit with 0");
-    bool *show_metrics = flag_bool("metrics", false, "Show metrics");
-    if (!flag_parse(argc, argv))
-    {
-        usage(stderr);
-        flag_print_error(stderr);
-        return 1;
-    }
-    argc = flag_rest_argc();
-    argv = flag_rest_argv();
-
-    if (argc != 1 || *help)
-    {
-        usage(stderr);
-        return 1;
-    }
-
-    Interpreter interpreter = {0};
-    if (!bf_init(argv[0], &interpreter, *show_metrics)) abort();
-
-    bf_compile(&interpreter);
-    bf_free(&interpreter);
-
-    Cmd cmd = {0};
-    cmd_append(&cmd, TEMP_OUT_FILE);
-
-    run_start_time = nanos_since_unspecified_epoch();
-    if (!nob_cmd_run(&cmd)) return 1;
-    run_stop_time = nanos_since_unspecified_epoch();
-    nob_delete_file(TEMP_OUT_FILE);
-
-    program_stop_time = nanos_since_unspecified_epoch();
-    if (*show_metrics) bf_print_metrics();
-    return 0;
 }

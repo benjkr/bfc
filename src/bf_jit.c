@@ -1,12 +1,8 @@
-#include "bf.c"
+#include "bf.h"
 #include "jit/jit.c"
+#include "nob.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/mman.h>
-#include <unistd.h>
-
-#define MEMORY_LEN 655360
-uint8_t MEMORY[MEMORY_LEN] = {0};
 
 char INS_PRELUDE[] = {
     OPCODE__PUSH_RAX, OPCODE__PUSH_RBX, OPCODE__PUSH_RCX, OPCODE__XOR_RAX_RAX, OPCODE__XOR_RBX_RBX, OPCODE__XOR_RCX_RCX,
@@ -122,45 +118,8 @@ void bf_jit(Interpreter *interpreter)
 
     compile_stop_time = nanos_since_unspecified_epoch();
 
-    // write_entire_file("./out.bin", sb.items, sb.count);
+    write_entire_file("./out.bin", sb.items, sb.count);
     run_start_time = nanos_since_unspecified_epoch();
     ((func_ptr)sb.items)();
     run_stop_time = nanos_since_unspecified_epoch();
-}
-
-void usage(FILE *stream)
-{
-    fprintf(stream, "Usage: %s [OPTIONS] <BF-FILE>\n", flag_program_name());
-    fprintf(stream, "OPTIONS:\n");
-    flag_print_options(stream);
-}
-
-int main(int argc, char *argv[])
-{
-    program_start_time = nanos_since_unspecified_epoch();
-    bool *help = flag_bool("help", false, "Print this help to stdout and exit with 0");
-    bool *show_metrics = flag_bool("metrics", false, "Show metrics");
-    if (!flag_parse(argc, argv))
-    {
-        usage(stderr);
-        flag_print_error(stderr);
-        return 1;
-    }
-    argc = flag_rest_argc();
-    argv = flag_rest_argv();
-
-    if (argc != 1 || *help)
-    {
-        usage(stderr);
-        return 1;
-    }
-
-    Interpreter interpreter = {0};
-    if (!bf_init(argv[0], &interpreter, *show_metrics)) abort();
-    bf_jit(&interpreter);
-    bf_free(&interpreter);
-
-    program_stop_time = nanos_since_unspecified_epoch();
-    if (*show_metrics) bf_print_metrics();
-    return 0;
 }

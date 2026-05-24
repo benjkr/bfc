@@ -1,3 +1,3 @@
 - data-pointer: `rcx`
-- jump-pointers: `rbx`
-- comparisons: `rax`
+- calling std functions: `call rax`
+- comparisons: `cmp [rcx], 0`
