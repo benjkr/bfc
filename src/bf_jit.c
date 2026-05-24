@@ -8,13 +8,6 @@ char INS_PRELUDE[] = {
     OPCODE__PUSH_RAX, OPCODE__PUSH_RBX, OPCODE__PUSH_RCX, OPCODE__XOR_RAX_RAX, OPCODE__XOR_RBX_RBX, OPCODE__XOR_RCX_RCX,
 };
 
-char INS_CHECKPOINT_PUSH[] = {
-    OPCODE__PUSH_RCX,
-};
-char INS_CHECKPOINT_POP[] = {
-    OPCODE__POP_RCX,
-};
-
 char INS_FOOTER[] = {
     OPCODE__POP_RCX,
     OPCODE__POP_RBX,
@@ -38,8 +31,8 @@ void bf_jit(Lexer *lexer)
     String_Builder sb = {0};
 
     sb_append_arr(&sb, INS_PRELUDE);
-    set_input(MOVABS_RCX_UINT64, &MEMORY);
-    sb_append_arr(&sb, MOVABS_RCX_UINT64);
+    set_input(MOVABS_RBX_UINT64, &MEMORY);
+    sb_append_arr(&sb, MOVABS_RBX_UINT64);
 
     SizeTStack stack = {0};
     for (lexer->ip = 0; lexer->ip < lexer->tokens.count; lexer->ip++)
@@ -48,38 +41,34 @@ void bf_jit(Lexer *lexer)
         switch (token.t)
         {
         case TYPE_BACK:
-            set_input(SUB_RCX_INT8, token.d.repeats);
-            sb_append_arr(&sb, SUB_RCX_INT8);
+            set_input(SUB_RBX_INT8, token.d.repeats);
+            sb_append_arr(&sb, SUB_RBX_INT8);
             break;
         case TYPE_FORWORD:
-            set_input(ADD_RCX_INT8, token.d.repeats);
-            sb_append_arr(&sb, ADD_RCX_INT8);
+            set_input(ADD_RBX_INT8, token.d.repeats);
+            sb_append_arr(&sb, ADD_RBX_INT8);
             break;
         case TYPE_INC:
-            set_input(ADD_AT_BYTE_PTR_RCX_INT8, token.d.repeats);
-            sb_append_arr(&sb, ADD_AT_BYTE_PTR_RCX_INT8);
+            set_input(ADD_AT_BYTE_PTR_RBX_INT8, token.d.repeats);
+            sb_append_arr(&sb, ADD_AT_BYTE_PTR_RBX_INT8);
             break;
         case TYPE_DEC:
-            set_input(SUB_AT_BYTE_PTR_RCX_INT8, token.d.repeats);
-            sb_append_arr(&sb, SUB_AT_BYTE_PTR_RCX_INT8);
+            set_input(SUB_AT_BYTE_PTR_RBX_INT8, token.d.repeats);
+            sb_append_arr(&sb, SUB_AT_BYTE_PTR_RBX_INT8);
             break;
         case TYPE_IN:
-            sb_append_arr(&sb, PUSH_RCX);
+            sb_append_arr(&sb, PUSH_RBX);
             set_input(MOVABS_RAX_UINT64, &getchar);
             sb_append_arr(&sb, MOVABS_RAX_UINT64);
             sb_append_arr(&sb, CALL_RAX);
-            sb_append_arr(&sb, POP_RCX);
-            sb_append_arr(&sb, MOV_AT_BYTE_PTR_RCX_AL);
+            sb_append_arr(&sb, POP_RBX);
+            sb_append_arr(&sb, MOV_AT_BYTE_PTR_RBX_AL);
             break;
         case TYPE_OUT:
-            sb_append_arr(&sb, INS_CHECKPOINT_PUSH);
-
-            sb_append_arr(&sb, MOV_DIL_AT_BYTE_PTR_RCX);
+            sb_append_arr(&sb, MOV_DIL_AT_BYTE_PTR_RBX);
             set_input(MOVABS_RAX_UINT64, &putchar);
             sb_append_arr(&sb, MOVABS_RAX_UINT64);
             sb_append_arr(&sb, CALL_RAX);
-
-            sb_append_arr(&sb, INS_CHECKPOINT_POP);
             break;
         case TYPE_LOOP_START:
             da_append(&stack, sb.count);
@@ -93,8 +82,8 @@ void bf_jit(Lexer *lexer)
             int32_t while_block_size = (int32_t)(sb.count - index_after_jmp);
             *(int32_t *)&sb.items[index_jmp_command + JMP_INT32_INPUT_OFFSET] = while_block_size;
 
-            set_input(CMP_AT_BYTE_PTR_RCX_INT8, 0);
-            sb_append_arr(&sb, CMP_AT_BYTE_PTR_RCX_INT8);
+            set_input(CMP_AT_BYTE_PTR_RBX_INT8, 0);
+            sb_append_arr(&sb, CMP_AT_BYTE_PTR_RBX_INT8);
 
             size_t start_of_loop = (sb.count + sizeof(JNZ_INT32)) - index_after_jmp;
             set_input(JNZ_INT32, (-(int32_t)start_of_loop));
