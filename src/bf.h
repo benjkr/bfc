@@ -69,4 +69,5 @@ void bf_free(Lexer *lexer);
 void bf_jit(Lexer *lexer);
 void bf_run(Lexer *lexer);
 void bf_compile(Lexer *lexer, char *out_file);
+void bf_compile_asm(Lexer *lexer, char *out_file);
 void bf_print_metrics(void);

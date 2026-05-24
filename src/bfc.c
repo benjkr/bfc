@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     bool *run = flag_bool("run", false, "For COMPILER ONLY run the output executable");
     bool *jit = flag_bool("jit", false, "Just-In-Time compile and run the program");
     bool *interpret = flag_bool("interpret", false, "Interpret and run the program");
+    bool *nasm = flag_bool("nasm", false, "ASM backend");
     char **out_file = flag_str("o", "a.out", "Output executable filename");
     if (!flag_parse(argc, argv))
     {
@@ -40,7 +41,8 @@ int main(int argc, char *argv[])
     argc = flag_rest_argc();
     argv = flag_rest_argv();
 
-    if (argc != 1 || *help || (*jit & *interpret))
+    int sum_of_engines = *jit + *interpret + *nasm;
+    if (argc != 1 || *help || sum_of_engines > 1)
     {
         usage(stderr);
         return 1;
@@ -53,7 +55,8 @@ int main(int argc, char *argv[])
     else if (*interpret) bf_run(&lexer);
     else
     {
-        bf_compile(&lexer, *out_file);
+        if (*nasm) bf_compile_asm(&lexer, *out_file);
+        else bf_compile(&lexer, *out_file);
         if (*run)
         {
             Cmd cmd = {0};
