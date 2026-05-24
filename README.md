@@ -1,0 +1,3 @@
+- data-pointer: `rcx`
+- jump-pointers: `rbx`
+- comparisons: `rax`
