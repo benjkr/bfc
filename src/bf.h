@@ -12,26 +12,26 @@ typedef enum
     TYPE_IN,
     TYPE_LOOP_START,
     TYPE_LOOP_END,
-} Instruction_Type;
+} Token_Type;
 
 typedef union {
     size_t loop_start_ip;
     size_t loop_end_ip;
     int8_t repeats;
-} Instruction_Data;
+} Token_Data;
 
 typedef struct
 {
-    Instruction_Type t;
-    Instruction_Data d;
-} Instruction;
+    Token_Type t;
+    Token_Data d;
+} Token;
 
 typedef struct
 {
-    Instruction *items;
+    Token *items;
     size_t count;
     size_t capacity;
-} Instructions;
+} Tokens;
 
 typedef struct
 {
@@ -44,18 +44,18 @@ typedef struct
 {
     size_t ip;
     size_t dp;
-    Instructions instructions;
-} Interpreter;
+    Tokens tokens;
+} Lexer;
 
 #ifndef BF_H
 #define BF_H 1
 extern uint64_t program_start_time;
-extern uint64_t interpreter_start_time;
+extern uint64_t lexer_start_time;
 extern uint64_t compile_start_time;
 extern uint64_t run_start_time;
 
 extern uint64_t program_stop_time;
-extern uint64_t interpreter_stop_time;
+extern uint64_t lexer_stop_time;
 extern uint64_t compile_stop_time;
 extern uint64_t run_stop_time;
 
@@ -64,9 +64,9 @@ extern uint8_t MEMORY[MEMORY_LEN];
 #endif // BF_H
 
 
-bool bf_init(const char *f, Interpreter *interpreter, bool show_metrics);
-void bf_free(Interpreter *interpreter);
-void bf_jit(Interpreter *interpreter);
-void bf_run(Interpreter *interpreter);
-void bf_compile(Interpreter *interpreter, char *out_file);
+bool bf_init(const char *f, Lexer *lexer, bool show_metrics);
+void bf_free(Lexer *lexer);
+void bf_jit(Lexer *lexer);
+void bf_run(Lexer *lexer);
+void bf_compile(Lexer *lexer, char *out_file);
 void bf_print_metrics(void);

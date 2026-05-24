@@ -38,29 +38,29 @@ const char *INSTRUCTION_TO_SRC[] = {
     [TYPE_LOOP_END] = BF_LOOP_END,
 };
 
-void bf_compile(Interpreter *interpreter, char *out_file)
+void bf_compile(Lexer *lexer, char *out_file)
 {
     compile_start_time = nanos_since_unspecified_epoch();
     String_Builder sb = {0};
     sb_append_cstr(&sb, file_template);
 
     sb_append_cstr(&sb, "void bf(){");
-    for (interpreter->ip = 0; interpreter->ip < interpreter->instructions.count; interpreter->ip++)
+    for (lexer->ip = 0; lexer->ip < lexer->tokens.count; lexer->ip++)
     {
-        Instruction ins = interpreter->instructions.items[interpreter->ip];
-        switch (ins.t)
+        Token token = lexer->tokens.items[lexer->ip];
+        switch (token.t)
         {
         case TYPE_DEC:
         case TYPE_INC:
         case TYPE_FORWORD:
         case TYPE_BACK:
-            sb_append_cstr(&sb, INSTRUCTION_TO_SRC[ins.t]);
-            sb_append_cstr(&sb, temp_sprintf("%d", ins.d.repeats));
+            sb_append_cstr(&sb, INSTRUCTION_TO_SRC[token.t]);
+            sb_append_cstr(&sb, temp_sprintf("%d", token.d.repeats));
             sb_append_cstr(&sb, ";");
             temp_reset();
             break;
         default:
-            sb_append_cstr(&sb, INSTRUCTION_TO_SRC[ins.t]);
+            sb_append_cstr(&sb, INSTRUCTION_TO_SRC[token.t]);
             break;
         }
     }

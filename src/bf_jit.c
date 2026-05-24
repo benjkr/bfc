@@ -32,7 +32,7 @@ typedef struct
 #define sb_append_arr(sb, buf) sb_append_buf(sb, buf, sizeof(buf) / sizeof(buf[0]))
 
 typedef void (*func_ptr)();
-void bf_jit(Interpreter *interpreter)
+void bf_jit(Lexer *lexer)
 {
     compile_start_time = nanos_since_unspecified_epoch();
     String_Builder sb = {0};
@@ -42,25 +42,25 @@ void bf_jit(Interpreter *interpreter)
     sb_append_arr(&sb, MOVABS_RCX_UINT64);
 
     SizeTStack stack = {0};
-    for (interpreter->ip = 0; interpreter->ip < interpreter->instructions.count; interpreter->ip++)
+    for (lexer->ip = 0; lexer->ip < lexer->tokens.count; lexer->ip++)
     {
-        Instruction ins = interpreter->instructions.items[interpreter->ip];
-        switch (ins.t)
+        Token token = lexer->tokens.items[lexer->ip];
+        switch (token.t)
         {
         case TYPE_BACK:
-            set_input(SUB_RCX_INT8, ins.d.repeats);
+            set_input(SUB_RCX_INT8, token.d.repeats);
             sb_append_arr(&sb, SUB_RCX_INT8);
             break;
         case TYPE_FORWORD:
-            set_input(ADD_RCX_INT8, ins.d.repeats);
+            set_input(ADD_RCX_INT8, token.d.repeats);
             sb_append_arr(&sb, ADD_RCX_INT8);
             break;
         case TYPE_INC:
-            set_input(ADD_AT_BYTE_PTR_RCX_INT8, ins.d.repeats);
+            set_input(ADD_AT_BYTE_PTR_RCX_INT8, token.d.repeats);
             sb_append_arr(&sb, ADD_AT_BYTE_PTR_RCX_INT8);
             break;
         case TYPE_DEC:
-            set_input(SUB_AT_BYTE_PTR_RCX_INT8, ins.d.repeats);
+            set_input(SUB_AT_BYTE_PTR_RCX_INT8, token.d.repeats);
             sb_append_arr(&sb, SUB_AT_BYTE_PTR_RCX_INT8);
             break;
         case TYPE_IN:

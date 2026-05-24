@@ -2,37 +2,37 @@
 #include "nob.h"
 #include <stdio.h>
 
-void bf_run(Interpreter *interpreter)
+void bf_run(Lexer *lexer)
 {
     run_start_time = nanos_since_unspecified_epoch();
-    for (interpreter->ip = 0; interpreter->ip < interpreter->instructions.count; interpreter->ip++)
+    for (lexer->ip = 0; lexer->ip < lexer->tokens.count; lexer->ip++)
     {
-        Instruction ins = interpreter->instructions.items[interpreter->ip];
-        switch (ins.t)
+        Token token = lexer->tokens.items[lexer->ip];
+        switch (token.t)
         {
         case TYPE_BACK:
-            interpreter->dp -= ins.d.repeats;
+            lexer->dp -= token.d.repeats;
             break;
         case TYPE_FORWORD:
-            interpreter->dp += ins.d.repeats;
+            lexer->dp += token.d.repeats;
             break;
         case TYPE_INC:
-            MEMORY[interpreter->dp] += ins.d.repeats;
+            MEMORY[lexer->dp] += token.d.repeats;
             break;
         case TYPE_DEC:
-            MEMORY[interpreter->dp] -= ins.d.repeats;
+            MEMORY[lexer->dp] -= token.d.repeats;
             break;
         case TYPE_IN:
-            MEMORY[interpreter->dp] = getchar();
+            MEMORY[lexer->dp] = getchar();
             break;
         case TYPE_OUT:
-            putchar(MEMORY[interpreter->dp]);
+            putchar(MEMORY[lexer->dp]);
             break;
         case TYPE_LOOP_START:
-            if (MEMORY[interpreter->dp] == 0) interpreter->ip = ins.d.loop_end_ip;
+            if (MEMORY[lexer->dp] == 0) lexer->ip = token.d.loop_end_ip;
             break;
         case TYPE_LOOP_END:
-            if (MEMORY[interpreter->dp] != 0) interpreter->ip = ins.d.loop_start_ip;
+            if (MEMORY[lexer->dp] != 0) lexer->ip = token.d.loop_start_ip;
             break;
         default:
             break;

@@ -6,11 +6,11 @@
 #include "nob.h"
 
 uint64_t program_start_time = 0;
-uint64_t interpreter_start_time = 0;
+uint64_t lexer_start_time = 0;
 uint64_t compile_start_time = 0;
 uint64_t run_start_time = 0;
 uint64_t program_stop_time = 0;
-uint64_t interpreter_stop_time = 0;
+uint64_t lexer_stop_time = 0;
 uint64_t compile_stop_time = 0;
 uint64_t run_stop_time = 0;
 uint8_t MEMORY[MEMORY_LEN] = {0};
@@ -46,14 +46,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    Interpreter interpreter = {0};
-    if (!bf_init(argv[0], &interpreter, *show_metrics)) abort();
+    Lexer lexer = {0};
+    if (!bf_init(argv[0], &lexer, *show_metrics)) abort();
 
-    if (*jit) bf_jit(&interpreter);
-    else if (*interpret) bf_run(&interpreter);
+    if (*jit) bf_jit(&lexer);
+    else if (*interpret) bf_run(&lexer);
     else
     {
-        bf_compile(&interpreter, *out_file);
+        bf_compile(&lexer, *out_file);
         if (*run)
         {
             Cmd cmd = {0};
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    bf_free(&interpreter);
+    bf_free(&lexer);
     program_stop_time = nanos_since_unspecified_epoch();
     if (*show_metrics) bf_print_metrics();
     return 0;

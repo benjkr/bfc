@@ -1,7 +1,7 @@
 #include "bf.h"
 #include "nob.h"
 
-bool repeat_instruction(Instruction *last, Instruction_Type t)
+bool repeat_token(Token *last, Token_Type t)
 {
     if (last->t == t && last->d.repeats < INT8_MAX)
     {
@@ -12,67 +12,67 @@ bool repeat_instruction(Instruction *last, Instruction_Type t)
     return false;
 }
 
-bool bf_init(const char *f, Interpreter *interpreter, bool show_metrics)
+bool bf_init(const char *f, Lexer *lexer, bool show_metrics)
 {
-    interpreter_start_time = nanos_since_unspecified_epoch();
+    lexer_start_time = nanos_since_unspecified_epoch();
     String_Builder sb = {0};
     if (!nob_read_entire_file(f, &sb))
     {
         return false;
     }
 
-    interpreter->dp = 0;
-    interpreter->ip = 0;
-    interpreter->instructions = (Instructions){0};
+    lexer->dp = 0;
+    lexer->ip = 0;
+    lexer->tokens = (Tokens){0};
 
     IntStack stack = {0};
     for (size_t i = 0; i < sb.count; i++)
     {
         char c = sb.items[i];
-        Instruction ins = {0};
+        Token token = {0};
 
-        Instruction *last = interpreter->instructions.count ? &da_last(&interpreter->instructions) : NULL;
+        Token *last = lexer->tokens.count ? &da_last(&lexer->tokens) : NULL;
         switch (c)
         {
         case '+':
-            ins.t = TYPE_INC;
-            if (last && repeat_instruction(last, ins.t)) continue;
-            ins.d.repeats = 1;
+            token.t = TYPE_INC;
+            if (last && repeat_token(last, token.t)) continue;
+            token.d.repeats = 1;
             break;
         case '-':
-            ins.t = TYPE_DEC;
-            if (last && repeat_instruction(last, ins.t)) continue;
-            ins.d.repeats = 1;
+            token.t = TYPE_DEC;
+            if (last && repeat_token(last, token.t)) continue;
+            token.d.repeats = 1;
             break;
         case '>':
-            ins.t = TYPE_FORWORD;
-            if (last && repeat_instruction(last, ins.t)) continue;
-            ins.d.repeats = 1;
+            token.t = TYPE_FORWORD;
+            if (last && repeat_token(last, token.t)) continue;
+            token.d.repeats = 1;
             break;
         case '<':
-            ins.t = TYPE_BACK;
-            if (last && repeat_instruction(last, ins.t)) continue;
-            ins.d.repeats = 1;
+            token.t = TYPE_BACK;
+            if (last && repeat_token(last, token.t)) continue;
+            token.d.repeats = 1;
             break;
         case '.':
-            ins.t = TYPE_OUT;
+            token.t = TYPE_OUT;
             break;
         case ',':
-            ins.t = TYPE_IN;
+            token.t = TYPE_IN;
             break;
         case '[':
-            ins.t = TYPE_LOOP_START;
-            da_append(&stack, interpreter->instructions.count);
+            token.t = TYPE_LOOP_START;
+            da_append(&stack, lexer->tokens.count);
             break;
         case ']':
-            ins.t = TYPE_LOOP_END;
-            ins.d.loop_start_ip = da_pop(&stack);
-            interpreter->instructions.items[ins.d.loop_start_ip].d.loop_end_ip = interpreter->instructions.count;
+            token.t = TYPE_LOOP_END;
+            token.d.loop_start_ip = da_pop(&stack);
+            lexer->tokens.items[token.d.loop_start_ip].d.loop_end_ip = lexer->tokens.count;
             break;
         default:
             continue;
         }
-        da_append(&interpreter->instructions, ins);
+        da_append(&lexer->tokens, token);
     }
     if (stack.count > 0)
     {
@@ -82,13 +82,13 @@ bool bf_init(const char *f, Interpreter *interpreter, bool show_metrics)
     sb_free(sb);
     da_free(stack);
 
-    interpreter_stop_time = nanos_since_unspecified_epoch();
+    lexer_stop_time = nanos_since_unspecified_epoch();
     return true;
 }
 
-void bf_free(Interpreter *interpreter)
+void bf_free(Lexer *lexer)
 {
-    da_free(interpreter->instructions);
+    da_free(lexer->tokens);
 }
 
 #define nanos_to_seconds_float(nanos) (float)(nanos) / (float)(1e+9)
@@ -96,7 +96,7 @@ void bf_print_metrics(void)
 {
     printf("\n");
     printf("Metrics Summary:\n");
-    printf("\tInterpreter Time: %f Seconds\n", nanos_to_seconds_float(interpreter_stop_time - interpreter_start_time));
+    printf("\tLexer Time: %f Seconds\n", nanos_to_seconds_float(lexer_stop_time - lexer_start_time));
     printf("\tCompile Time: %f Seconds\n", nanos_to_seconds_float(compile_stop_time - compile_start_time));
     printf("\tRun Time: %f Seconds\n", nanos_to_seconds_float(run_stop_time - run_start_time));
     printf("\tTotal Program Time: %f Seconds\n", nanos_to_seconds_float(program_stop_time - program_start_time));
