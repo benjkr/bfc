@@ -1,4 +1,4 @@
-#include ".jit.c"
+#include ".jit.h"
 
 #define CONCAT_HIDDEN2(a, b) a##b
 #define CONCAT2(a, b) CONCAT_HIDDEN2(a, b)

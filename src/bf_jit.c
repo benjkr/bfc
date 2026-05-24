@@ -1,5 +1,5 @@
 #include "bf.h"
-#include "jit/jit.c"
+#include "jit/jit.h"
 #include "nob.h"
 #include <stdio.h>
 #include <sys/mman.h>
