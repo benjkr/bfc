@@ -48,6 +48,20 @@ Use `-interpret`
 
 
 # Benchmark
-Graph showing the Compile Time and Runtime of all implementations
+Graph showing the Compile Time and Runtime of all implementations.
+The bench will run the ![mandelbrot.bf](./examples/mandelbrot.bf) program and avg the results.
 
 ![results.svg](./bench/results.svg)
+
+## Examples
+All the following runs will produce the same output.
+
+```bash
+./bin/bfc -interpret examples/mandelbrot.bf
+./bin/bfc -c -o mandelbrot_c examples/mandelbrot.bf && ./mandelbrot_c
+./bin/bfc -nasm -o mandelbrot_nasm examples/mandelbrot.bf && ./mandelbrot_nasm
+./bin/bfc -jit examples/mandelbrot.bf
+
+# Use -metrics to see compiler/runtime statistics :)
+./bin/bfc -jit -metrics examples/mandelbrot.bf
+```
