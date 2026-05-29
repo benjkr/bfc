@@ -47,7 +47,7 @@ Data & Control-Flow implementation (same for the NASM backend):
 A simple and dumb interpreter to run the application.
 Use `-interpret`
 
-## Examples
+# Examples
 
 All the following runs will produce the same output.
 
