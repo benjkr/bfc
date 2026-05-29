@@ -20,6 +20,7 @@ void usage(FILE *stream)
     fprintf(stream, "Usage: %s [OPTIONS] <BF-FILE>\n", flag_program_name());
     fprintf(stream, "OPTIONS:\n");
     flag_print_options(stream);
+    fprintf(stream, "Use one of -c -nasm -jit -interpret\n");
 }
 
 int main(int argc, char *argv[])
@@ -27,11 +28,12 @@ int main(int argc, char *argv[])
     program_start_time = nanos_since_unspecified_epoch();
     bool *help = flag_bool("help", false, "Print this help to stdout and exit with 0");
     bool *show_metrics = flag_bool("metrics", false, "Show metrics");
-    bool *run = flag_bool("run", false, "For COMPILER ONLY run the output executable");
+    bool *run = flag_bool("run", false, "COMPILER ONLY: Run the output executable");
+    char **out_file = flag_str("o", "a.out", "COMPILER ONLY: Output executable filename.");
+    bool *nasm_backend = flag_bool("nasm", false, "ASM backend");
+    bool *c_backend = flag_bool("c", false, "C backend");
     bool *jit = flag_bool("jit", false, "Just-In-Time compile and run the program");
     bool *interpret = flag_bool("interpret", false, "Interpret and run the program");
-    bool *nasm = flag_bool("nasm", false, "ASM backend");
-    char **out_file = flag_str("o", "a.out", "Output executable filename");
     if (!flag_parse(argc, argv))
     {
         usage(stderr);
@@ -41,8 +43,8 @@ int main(int argc, char *argv[])
     argc = flag_rest_argc();
     argv = flag_rest_argv();
 
-    int sum_of_engines = *jit + *interpret + *nasm;
-    if (argc != 1 || *help || sum_of_engines > 1)
+    int sum_of_engines = *jit + *interpret + *nasm_backend + *c_backend;
+    if (argc != 1 || *help || sum_of_engines != 1)
     {
         usage(stderr);
         return 1;
@@ -53,21 +55,19 @@ int main(int argc, char *argv[])
 
     if (*jit) bf_jit(&lexer);
     else if (*interpret) bf_run(&lexer);
-    else
-    {
-        if (*nasm) bf_compile_asm(&lexer, *out_file);
-        else bf_compile(&lexer, *out_file);
-        if (*run)
-        {
-            Cmd cmd = {0};
-            if (*out_file[0] == '/') cmd_append(&cmd, *out_file);
-            else cmd_append(&cmd, temp_sprintf("./%s", *out_file));
+    else if (*c_backend) bf_compile(&lexer, *out_file);
+    else if (*nasm_backend) bf_compile_asm(&lexer, *out_file);
 
-            run_start_time = nanos_since_unspecified_epoch();
-            if (!nob_cmd_run(&cmd)) return 1;
-            run_stop_time = nanos_since_unspecified_epoch();
-            temp_reset();
-        }
+    if (*run && (*c_backend || *nasm_backend))
+    {
+        Cmd cmd = {0};
+        if (*out_file[0] == '/') cmd_append(&cmd, *out_file);
+        else cmd_append(&cmd, temp_sprintf("./%s", *out_file));
+
+        run_start_time = nanos_since_unspecified_epoch();
+        if (!nob_cmd_run(&cmd)) return 1;
+        run_stop_time = nanos_since_unspecified_epoch();
+        temp_reset();
     }
 
     bf_free(&lexer);

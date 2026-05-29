@@ -1,0 +1,85 @@
+<svg width="1100" height="800" xmlns="http://www.w3.org/2000/svg">
+  <style>text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }</style>
+  <rect width="100%" height="100%" fill="white" />
+  <line x1="80" y1="400" x2="1020" y2="400" stroke="black" />
+  <line x1="80" y1="60" x2="80" y2="400" stroke="black" />
+  <text x="550.0" y="30.0" text-anchor="middle" font-size="22" font-weight="bold">Brainfuck Performance Breakdown</text>
+  <text x="550.0" y="55.0" text-anchor="middle" font-size="14" fill="#666">(Average of 10 runs)</text>
+  <rect x="920" y="60" width="15" height="15" fill="#ff9999" />
+  <text x="940" y="72" font-size="12">Lexer Time</text>
+  <rect x="920" y="85" width="15" height="15" fill="#66b3ff" />
+  <text x="940" y="97" font-size="12">Compile Time</text>
+  <rect x="920" y="110" width="15" height="15" fill="#99ff99" />
+  <text x="940" y="122" font-size="12">Run Time</text>
+  <text x="70" y="405" text-anchor="end" font-size="12">0s</text>
+  <text x="70" y="65" text-anchor="end" font-size="12">8.41s</text>
+  <rect x="140" y="399.9949687857609" width="160" height="0.005031214239104112" fill="#ff9999" stroke="#333" stroke-width="0.5" />
+  <rect x="140" y="90.91113976500998" width="160" height="309.0838290207509" fill="#99ff99" stroke="#333" stroke-width="0.5" />
+  <text x="220.0" y="420" text-anchor="middle" font-size="13" font-weight="bold">Interpreter</text>
+  <text x="220.0" y="80.91113976500998" text-anchor="middle" font-size="12" font-weight="600">7.6486s</text>
+  <rect x="360" y="399.99539310503405" width="160" height="0.004606894965926657" fill="#ff9999" stroke="#333" stroke-width="0.5" />
+  <rect x="360" y="357.0504880328326" width="160" height="42.94490507220146" fill="#66b3ff" stroke="#333" stroke-width="0.5" />
+  <rect x="360" y="330.2610220214631" width="160" height="26.789466011369537" fill="#99ff99" stroke="#333" stroke-width="0.5" />
+  <text x="440.0" y="420" text-anchor="middle" font-size="13" font-weight="bold">Compiler (C Backend)</text>
+  <text x="440.0" y="320.2610220214631" text-anchor="middle" font-size="12" font-weight="600">1.7258s</text>
+  <rect x="580" y="399.9951910482373" width="160" height="0.004808951762677826" fill="#ff9999" stroke="#333" stroke-width="0.5" />
+  <rect x="580" y="393.57467872716745" width="160" height="6.420512321069865" fill="#66b3ff" stroke="#333" stroke-width="0.5" />
+  <rect x="580" y="360.8114843425683" width="160" height="32.763194384599146" fill="#99ff99" stroke="#333" stroke-width="0.5" />
+  <text x="660.0" y="420" text-anchor="middle" font-size="13" font-weight="bold">Compiler (NASM)</text>
+  <text x="660.0" y="350.8114843425683" text-anchor="middle" font-size="12" font-weight="600">0.9698s</text>
+  <rect x="800" y="399.9952557064123" width="160" height="0.004744293587717452" fill="#ff9999" stroke="#333" stroke-width="0.5" />
+  <rect x="800" y="399.994152476302" width="160" height="0.0011032301102613835" fill="#66b3ff" stroke="#333" stroke-width="0.5" />
+  <rect x="800" y="368.22352169438363" width="160" height="31.77063078191838" fill="#99ff99" stroke="#333" stroke-width="0.5" />
+  <text x="880.0" y="420" text-anchor="middle" font-size="13" font-weight="bold">JIT</text>
+  <text x="880.0" y="358.22352169438363" text-anchor="middle" font-size="12" font-weight="600">0.7865s</text>
+  <rect x="140.0" y="480" width="220" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="250.0" y="502" text-anchor="middle" font-size="13" font-weight="bold" fill="#212529">Implementation</text>
+  <rect x="360.0" y="480" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="435.0" y="502" text-anchor="middle" font-size="13" font-weight="bold" fill="#212529">Lexer (s)</text>
+  <rect x="510.0" y="480" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="585.0" y="502" text-anchor="middle" font-size="13" font-weight="bold" fill="#212529">Compile (s)</text>
+  <rect x="660.0" y="480" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="735.0" y="502" text-anchor="middle" font-size="13" font-weight="bold" fill="#212529">Run (s)</text>
+  <rect x="810.0" y="480" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="885.0" y="502" text-anchor="middle" font-size="13" font-weight="bold" fill="#212529">Total (s)</text>
+  <rect x="140.0" y="515" width="220" height="35" fill="white" stroke="#dee2e6" />
+  <text x="250.0" y="537" text-anchor="middle" font-size="12" fill="#495057">Interpreter</text>
+  <rect x="360.0" y="515" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="435.0" y="537" text-anchor="middle" font-size="12" fill="#495057">0.000124</text>
+  <rect x="510.0" y="515" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="585.0" y="537" text-anchor="middle" font-size="12" fill="#495057">0.000000</text>
+  <rect x="660.0" y="515" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="735.0" y="537" text-anchor="middle" font-size="12" fill="#495057">7.648439</text>
+  <rect x="810.0" y="515" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="885.0" y="537" text-anchor="middle" font-size="12" fill="#495057">7.648614</text>
+  <rect x="140.0" y="550" width="220" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="250.0" y="572" text-anchor="middle" font-size="12" fill="#495057">Compiler (C Backend)</text>
+  <rect x="360.0" y="550" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="435.0" y="572" text-anchor="middle" font-size="12" fill="#495057">0.000114</text>
+  <rect x="510.0" y="550" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="585.0" y="572" text-anchor="middle" font-size="12" fill="#495057">1.062694</text>
+  <rect x="660.0" y="550" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="735.0" y="572" text-anchor="middle" font-size="12" fill="#495057">0.662919</text>
+  <rect x="810.0" y="550" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="885.0" y="572" text-anchor="middle" font-size="12" fill="#495057">1.725769</text>
+  <rect x="140.0" y="585" width="220" height="35" fill="white" stroke="#dee2e6" />
+  <text x="250.0" y="607" text-anchor="middle" font-size="12" fill="#495057">Compiler (NASM)</text>
+  <rect x="360.0" y="585" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="435.0" y="607" text-anchor="middle" font-size="12" fill="#495057">0.000119</text>
+  <rect x="510.0" y="585" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="585.0" y="607" text-anchor="middle" font-size="12" fill="#495057">0.158879</text>
+  <rect x="660.0" y="585" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="735.0" y="607" text-anchor="middle" font-size="12" fill="#495057">0.810742</text>
+  <rect x="810.0" y="585" width="150" height="35" fill="white" stroke="#dee2e6" />
+  <text x="885.0" y="607" text-anchor="middle" font-size="12" fill="#495057">0.969788</text>
+  <rect x="140.0" y="620" width="220" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="250.0" y="642" text-anchor="middle" font-size="12" fill="#495057">JIT</text>
+  <rect x="360.0" y="620" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="435.0" y="642" text-anchor="middle" font-size="12" fill="#495057">0.000117</text>
+  <rect x="510.0" y="620" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="585.0" y="642" text-anchor="middle" font-size="12" fill="#495057">0.000027</text>
+  <rect x="660.0" y="620" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="735.0" y="642" text-anchor="middle" font-size="12" fill="#495057">0.786181</text>
+  <rect x="810.0" y="620" width="150" height="35" fill="#f8f9fa" stroke="#dee2e6" />
+  <text x="885.0" y="642" text-anchor="middle" font-size="12" fill="#495057">0.786496</text>
+</svg>

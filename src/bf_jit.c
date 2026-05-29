@@ -121,7 +121,7 @@ void bf_jit(Lexer *lexer)
 
     compile_stop_time = nanos_since_unspecified_epoch();
 
-    write_entire_file("./out.bin", sb.items, sb.count);
+    // write_entire_file("./out.bin", sb.items, sb.count);
     run_start_time = nanos_since_unspecified_epoch();
     ((func_ptr)sb.items)();
     run_stop_time = nanos_since_unspecified_epoch();
