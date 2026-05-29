@@ -3,6 +3,7 @@
 A project that takes a Brainfuck file and runs/compiles/jit.
 
 ## Usage
+
 ```
 Usage: ./bin/bfc [OPTIONS] <BF-FILE>
 OPTIONS:
@@ -46,14 +47,8 @@ Data & Control-Flow implementation (same for the NASM backend):
 A simple and dumb interpreter to run the application.
 Use `-interpret`
 
-
-# Benchmark
-Graph showing the Compile Time and Runtime of all implementations.
-The bench will run the ![mandelbrot.bf](./examples/mandelbrot.bf) program and avg the results.
-
-![results.svg](./bench/results.svg)
-
 ## Examples
+
 All the following runs will produce the same output.
 
 ```bash
@@ -65,3 +60,10 @@ All the following runs will produce the same output.
 # Use -metrics to see compiler/runtime statistics :)
 ./bin/bfc -jit -metrics examples/mandelbrot.bf
 ```
+
+# Benchmark
+
+Graph showing the Compile Time and Runtime of all implementations.
+The bench will run the ![mandelbrot.bf](./examples/mandelbrot.bf) program and avg the results.
+
+![results.svg](./bench/results.svg)
