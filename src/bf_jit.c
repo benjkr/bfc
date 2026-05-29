@@ -76,17 +76,31 @@ void bf_jit(Lexer *lexer)
             da_append(&stack, sb.count);
             break;
         case TYPE_LOOP_END:
+            // jmp forward `while_block_size` bytes       <--- index_jmp_command
+            // inc 1                              <|      <--- index_after_jmp
+            // forward 1           while_block_size|
+            // forward 1                          <|
+            // cmp 0
+            // jnz back `while_block_size+cmp_size+jnz_size` bytes
+            //
+
             size_t index_after_jmp = da_pop(&stack);
             size_t index_jmp_command = da_pop(&stack);
 
             int32_t while_block_size = (int32_t)(sb.count - index_after_jmp);
-            *(int32_t *)&sb.items[index_jmp_command + JMP_INT32_INPUT_OFFSET] = while_block_size;
+
+            // TODO: Maybe use this because its probably faster?
+            // _set_input_raw(sb.items, index_jmp_command+JMP_INT32_INPUT_OFFSET, while_block_size,
+            // JMP_INT32_INPUT_TYPE);
+            set_input(JMP_INT32, while_block_size);
+            write_opcode(JMP_INT32, &sb.items[index_jmp_command]);
 
             set_input(CMP_AT_BYTE_PTR_RBX_INT8, 0);
             sb_append_arr(&sb, CMP_AT_BYTE_PTR_RBX_INT8);
 
-            size_t start_of_loop = (sb.count + sizeof(JNZ_INT32)) - index_after_jmp;
-            set_input(JNZ_INT32, (-(int32_t)start_of_loop));
+            int32_t back_bytes_to_start_of_loop =
+                -(int32_t)(while_block_size + sizeof(CMP_AT_BYTE_PTR_RBX_INT8) + sizeof(JNZ_INT32));
+            set_input(JNZ_INT32, back_bytes_to_start_of_loop);
             sb_append_arr(&sb, JNZ_INT32);
             break;
         default:
@@ -101,8 +115,8 @@ void bf_jit(Lexer *lexer)
     size_t total_length = sb.count + ((uintptr_t)sb.items - page_start);
     if (mprotect((void *)page_start, total_length, PROT_READ | PROT_WRITE | PROT_EXEC) == -1)
     {
-        perror("mprotect failed");
-        return;
+        printf("Can't make the jit buffer PROT_READ | PROT_WRITE | PROT_EXEC");
+        exit(1);
     }
 
     compile_stop_time = nanos_since_unspecified_epoch();

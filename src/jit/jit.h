@@ -6,4 +6,6 @@
 #define CONCAT_HIDDEN3(a, b, c) a##b##c
 #define CONCAT3(a, b, c) CONCAT_HIDDEN3(a, b, c)
 
-#define set_input(OPCODE, literal) *((CONCAT2(OPCODE, _INPUT_TYPE) *)(&OPCODE[CONCAT2(OPCODE, _INPUT_OFFSET)])) = (CONCAT2(OPCODE, _INPUT_TYPE))(literal)
+#define _set_input_raw(OPCODE, offset, literal, type) *(type *)(&OPCODE[(offset)]) = (type)(literal)
+#define set_input(OPCODE, literal) _set_input_raw(OPCODE, CONCAT2(OPCODE, _INPUT_OFFSET), literal, CONCAT2(OPCODE, _INPUT_TYPE))
+#define write_opcode(OPCODE, ptr) memcpy((ptr), OPCODE, sizeof(OPCODE))
