@@ -1,6 +1,7 @@
 # Brainfuck Implementation
 
 A project that takes a Brainfuck file and runs/compiles/jit.
+Currently, the JIT compiler and standard compiler only supports x86-64 Linux.
 
 ## Usage
 
@@ -26,6 +27,15 @@ OPTIONS:
         Interpret and run the program
 Use one of -c -nasm -jit -interpret
 ```
+
+## Build
+
+```bash
+make
+```
+
+- **python3**: Required for jit opcode generation
+- **gcc**
 
 ## Compiler
 
